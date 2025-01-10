@@ -1,87 +1,98 @@
 // Styles
 import "./style.css";
 
-// Data
+// Data & filtered data
 import { recipes } from "./data/recipes.js";
 let filteredRecipes = {};
 
+// Algorithme
+import { filterRecipes } from "./algorithm/filterRecipes.js";
+
 // Components
-import { setFilters } from "./component/filters.js";
+import { setFilters, renderFilters } from "./component/filters.js";
+import { updateLabels } from "./component/labels.js";
 import { card } from "./component/card.js";
 
-// Helpers
-import { sanitize } from "./helpers/helpers.js";
+// **** Set
+// Selected values
+let s = "";
+let selectedIngredient = "";
+let selectedAppliance = "";
+let selectedUstensil = "";
 
-// Algorithme
+const recipesElement = document.getElementById("recipes");
+const counterElement = document.getElementById("counter");
 
 // Search event
 const searchElement = document.getElementById("search");
-searchElement.addEventListener("input", (event) =>
-  filterRecipe(event.target.value || "")
-);
-
-// Functions >>> Sortir algo
-function filterRecipe(s = "", ingredient = "", appliance = "", ustensil = "") {
-  filteredRecipes = recipes.filter((r) => {
-    // Sortir l'algo
-    // Search for "s" in name and ingredients
-    const nameMatch =
-      typeof r.name === "string" &&
-      (r.name.toLowerCase().includes(s.toLowerCase()) ||
-        /*r.description.toLowerCase().includes(s.toLowerCase()) ||*/
-        r.ingredients.some(
-          (i) =>
-            typeof i.ingredient === "string" &&
-            i.ingredient.toLowerCase().includes(s.toLowerCase())
-        ));
-
-    const ingredientsMatch = ingredient
-      ? r.ingredients.some(
-          (i) =>
-            typeof i.ingredient === "string" &&
-            sanitize(i.ingredient) === ingredient
-        )
-      : true;
-
-    const applianceMatch = appliance
-      ? typeof r.appliance === "string" &&
-        r.appliance.toLowerCase() === appliance.toLowerCase()
-      : true;
-
-    const ustensilsMatch = ustensil
-      ? r.ustensils.some(
-          (u) => typeof u === "string" && sanitize(u) === ustensil
-        )
-      : true;
-
-    return nameMatch && ingredientsMatch && applianceMatch && ustensilsMatch;
-  });
-
-  // Then, render
+searchElement.addEventListener("input", (event) => {
+  s = event.target.value || "";
+  console.log(`Pattern recherchée : ${s}`);
+  filteredRecipes = filterRecipes(
+    recipes,
+    s,
+    selectedIngredient,
+    selectedAppliance,
+    selectedUstensil
+  );
   render();
-  console.log(filteredRecipes.length, recipes.length);
-}
+});
 
-const onSelectFilters = (value) => {
-  console.log(`Ingredient sélectionné : ${value}`);
-  filterRecipe("", value);
+// Filters callback event
+const onSelectFilters = (
+  value = { ingredient: "", appliance: "", ustensil: "" }
+) => {
+  selectedIngredient = value.ingredient || "";
+  selectedAppliance = value.appliance || "";
+  selectedUstensil = value.ustensil || "";
+  console.log(`Ingrédient sélectionné : ${selectedIngredient}`);
+  console.log(`Appliance sélectionné : ${selectedAppliance}`);
+  console.log(`Ustentile sélectionné : ${selectedUstensil}`);
+  filteredRecipes = filterRecipes(
+    recipes,
+    s,
+    selectedIngredient,
+    selectedAppliance,
+    selectedUstensil
+  );
+  render();
 };
 
+let previousLength = recipes.length;
 function render() {
+  // Update filters options
+  renderFilters(filteredRecipes);
+
+  // Update labels
+  updateLabels(
+    selectedIngredient,
+    selectedAppliance,
+    selectedUstensil,
+    onSelectFilters
+  );
+
   // Update counter
-  document.querySelector(
-    "#counter"
-  ).innerHTML = `${filteredRecipes.length} recettes`;
+  counterElement.innerHTML = `${filteredRecipes.length} recettes`;
+  if (previousLength != filteredRecipes.length) {
+    counterElement.animate([{ color: "#fbbf24" }, { color: "#000" }], {
+      duration: 800,
+      iterations: 1,
+    });
+  }
+  previousLength = filteredRecipes.length;
+
   // Update results
-  document.querySelector("#recipes").innerHTML = `
+  recipesElement.innerHTML = `
   <section id="cards" class="grid grid-cols-3 grid-flow-row gap-10">
    ${filteredRecipes.map((r) => card(r)).join("")} 
   </section>
 `;
 }
 
-// First run
-setFilters(recipes, onSelectFilters);
-filterRecipe();
-
-// > Sorti l'algo
+// **** Run
+// Set filters
+setFilters(onSelectFilters);
+// Init filtered recipes without filters
+filteredRecipes = filterRecipes(recipes);
+// First render
+render();

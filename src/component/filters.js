@@ -1,23 +1,19 @@
-import { sanitize } from "../helpers/helpers";
+import { sanitize, capitalize } from "../helpers/helpers";
 
-function createSelect(id, name, values, onChangeCallback) {
+const selectNames = {
+  ingredients: "Ingrédients",
+  appliances: "Appareils",
+  ustensils: "Ustensiles",
+};
+
+function createSelect(id, onChangeCallback) {
+  // Set select
   const selectElement = document.createElement("select");
-  selectElement.name = name;
+  selectElement.classList = "select mr-4";
+  selectElement.name = selectNames[id];
   selectElement.id = id;
 
-  // Default option
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "";
-  defaultOption.textContent = "— " + name;
-  selectElement.appendChild(defaultOption);
-
-  values.forEach((v) => {
-    const option = document.createElement("option");
-    option.value = sanitize(v);
-    option.textContent = v;
-    selectElement.appendChild(option);
-  });
-
+  // Callback event
   if (typeof onChangeCallback === "function") {
     selectElement.addEventListener("change", (event) => {
       onChangeCallback(event.target.value);
@@ -26,10 +22,55 @@ function createSelect(id, name, values, onChangeCallback) {
   return selectElement;
 }
 
-// Voir si fct setup + render
+function createOptions(id, values) {
+  const selectElement = document.getElementById(id);
+  // Flush options
+  selectElement.options.length = 0;
 
-export function setFilters(recipes, onSelectFilters) {
-  // Set filters
+  // Set default
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.textContent = selectNames[id];
+  selectElement.appendChild(defaultOption);
+
+  // Set options
+  values.forEach((v) => {
+    const option = document.createElement("option");
+    option.value = sanitize(v);
+    option.textContent = capitalize(v);
+    selectElement.appendChild(option);
+  });
+}
+
+export function setFilters(onSelectFilters) {
+  const filtersElement = document.getElementById("filters");
+
+  // Set Ingredients
+  const onIngredientsChange = (value) => {
+    console.log(`Option sélectionnée : ${value}`);
+    onSelectFilters({ ingredient: value });
+  };
+  const ingredientsSelect = createSelect("ingredients", onIngredientsChange);
+  filtersElement.appendChild(ingredientsSelect);
+
+  // Set Appliance
+  const onAppliancesChange = (value) => {
+    console.log(`Option sélectionnée : ${value}`);
+    onSelectFilters({ appliance: value });
+  };
+  const appliancesSelect = createSelect("appliances", onAppliancesChange);
+  filtersElement.appendChild(appliancesSelect);
+
+  // Set ingredients
+  const onUstensilsChange = (value) => {
+    console.log(`Option sélectionnée : ${value}`);
+    onSelectFilters({ ustensil: value });
+  };
+  const ustensilsSelect = createSelect("ustensils", onUstensilsChange);
+  filtersElement.appendChild(ustensilsSelect);
+}
+
+export function renderFilters(filterRecipes) {
   // Faire un helper = unique qui prends un [] ou un [{}]
   // Méthode A =
   // ${
@@ -43,28 +84,21 @@ export function setFilters(recipes, onSelectFilters) {
   // Méthode B =
   const ingredients = [
     ...new Set(
-      recipes
+      filterRecipes
         .flatMap((recipe) => recipe.ingredients.map((i) => i.ingredient))
         .filter(Boolean)
     ),
   ];
-  // const appliances = [
-  //   ...new Set(recipes.map((recipe) => recipe.appliance).filter(Boolean)),
-  // ];
-  // const ustensils = [
-  //   ...new Set(recipes.flatMap((recipe) => recipe.ustensils).filter(Boolean)),
-  // ];
+  const appliances = [
+    ...new Set(filterRecipes.map((recipe) => recipe.appliance).filter(Boolean)),
+  ];
+  const ustensils = [
+    ...new Set(
+      filterRecipes.flatMap((recipe) => recipe.ustensils).filter(Boolean)
+    ),
+  ];
 
-  const onIngredientsChange = (value) => {
-    console.log(`Option sélectionnée : ${value}`);
-    onSelectFilters(value);
-  };
-
-  const ingredientsSelect = createSelect(
-    "ingredients",
-    "Ingrédients",
-    ingredients,
-    onIngredientsChange
-  );
-  document.getElementById("filters").appendChild(ingredientsSelect);
+  createOptions("ingredients", ingredients);
+  createOptions("appliances", appliances);
+  createOptions("ustensils", ustensils);
 }
