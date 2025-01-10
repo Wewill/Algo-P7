@@ -31,8 +31,7 @@ export function filterRecipes(
 
     // Search for appliance from select
     const applianceMatch = appliance
-      ? typeof r.appliance === "string" &&
-        r.appliance.toLowerCase() === appliance.toLowerCase()
+      ? typeof r.appliance === "string" && sanitize(r.appliance) === appliance
       : true;
 
     // Search for ustensil from select
