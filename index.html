@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@200..800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Les petits plats</title>
+  </head>
+  <body class="font-Manrope bg-zinc-100">
+    <header
+      class="bg-cover bg-center h-[667px] p-10"
+      style="background-image: url('header.jpg')"
+    >
+      <div
+        class="logotype font-Anton uppercase text-xl text-white tracking-wide"
+      >
+        Les petits plats
+      </div>
+      <div
+        class="flex w-[80%] h-full flex-col justify-center items-center m-auto"
+      >
+        <h1
+          class="font-Anton uppercase text-center text-4xl font-bold text-amber-400 mb-6 tracking-wide"
+        >
+          Cherchez parmi plus de 1500 recettes<br />
+          du quotidien, simples et délicieuses
+        </h1>
+        <input
+          type="text"
+          id="search"
+          class="w-full rounded-md p-4"
+          placeholder="Rechercher une recette, un ingrédient, ..."
+        />
+      </div>
+    </header>
+
+    <main class="mx-20 my-10">
+      <section class="flex flex-row mb-8 justify-stretch">
+        <div id="filters"></div>
+        <div class="flex-grow"></div>
+        <div id="counter" class="font-Anton text-lg tracking-wide">
+          0 recette
+        </div>
+      </section>
+      <div id="recipes"></div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
