@@ -6,7 +6,7 @@ import { recipes } from "./data/recipes.js";
 let filteredRecipes = {};
 
 // Algorithme
-import { filterRecipes } from "./algorithm/filterRecipes.js";
+import filterRecipes from "./algorithm/filterRecipes.js";
 
 // Components
 import { setFilters, renderFilters } from "./component/filters.js";
