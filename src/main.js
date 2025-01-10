@@ -25,9 +25,26 @@ const counterElement = document.getElementById("counter");
 
 // Search event
 const searchElement = document.getElementById("search");
+const resetSearchElement = document.getElementById("reset");
 searchElement.addEventListener("input", (event) => {
   s = event.target.value || "";
+  if (s !== "") resetSearchElement.classList.remove("hidden");
+  else resetSearchElement.classList.add("hidden");
   console.log(`Pattern recherchée : ${s}`);
+  // Filter & render
+  filteredRecipes = filterRecipes(
+    recipes,
+    s,
+    selectedIngredient,
+    selectedAppliance,
+    selectedUstensil
+  );
+  render();
+});
+resetSearchElement.addEventListener("click", () => {
+  searchElement.value = s = "";
+  resetSearchElement.classList.add("hidden");
+  // Filter & render
   filteredRecipes = filterRecipes(
     recipes,
     s,
@@ -72,6 +89,7 @@ function render() {
   updateLabels(
     selectedIngredient,
     selectedAppliance,
+
     selectedUstensil,
     onSelectFilters
   );

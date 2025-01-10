@@ -2,12 +2,16 @@ function createLabel(id, value, onChangeCallback) {
   // Set label
   const labelElement = document.createElement("div");
   labelElement.classList =
-    "label rounded-md bg-yellow-400 font-light px-3 py-1 mr-4";
-  labelElement.innerHTML = "value : " + value;
+    "label rounded-md bg-yellow-400 font-normal px-5 py-3 mr-4";
+  let optionName = Array.from(
+    document.getElementById(id + "s")?.options || []
+  ).find((o) => o.value === value).innerHTML;
+  labelElement.innerHTML = optionName;
   labelElement.setAttribute("data-type", id);
 
   const labelButtonElement = document.createElement("button");
-  labelButtonElement.innerHTML = "X";
+  labelButtonElement.classList = "ml-8";
+  labelButtonElement.innerHTML = "<i class='fa fa-close'>";
 
   // Callback event
   if (typeof onChangeCallback === "function") {

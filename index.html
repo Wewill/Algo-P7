@@ -10,6 +10,10 @@
       href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@200..800&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
     <title>Les petits plats</title>
   </head>
   <body class="font-Manrope bg-zinc-100">
@@ -31,12 +35,29 @@
           Cherchez parmi plus de 1500 recettes<br />
           du quotidien, simples et délicieuses
         </h1>
-        <input
-          type="text"
-          id="search"
-          class="w-full rounded-md p-4"
-          placeholder="Rechercher une recette, un ingrédient, ..."
-        />
+        <div class="w-full relative">
+          <label class="sr-only">Search:</label>
+          <input
+            type="text"
+            id="search"
+            class="w-full rounded-md p-4"
+            placeholder="Rechercher une recette, un ingrédient, ..."
+          />
+          <button
+            id="submit"
+            type="submit"
+            class="absolute right-0 top-0 p-3 px-4 m-1 rounded-md bg-black text-white hover:bg-yellow-500"
+          >
+            <i class="fa fa-search"></i>
+          </button>
+          <button
+            id="reset"
+            type="reset"
+            class="hidden absolute right-0 top-0 p-3 px-4 m-1 mr-12 text-zinc-500 hover:text-black"
+          >
+            <i class="fa fa-close"></i>
+          </button>
+        </div>
       </div>
     </header>
 
