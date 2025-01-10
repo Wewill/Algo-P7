@@ -61,7 +61,12 @@ const onSelectFilters = (
 let previousLength = recipes.length;
 function render() {
   // Update filters options
-  renderFilters(filteredRecipes);
+  renderFilters(
+    filteredRecipes,
+    selectedIngredient,
+    selectedAppliance,
+    selectedUstensil
+  );
 
   // Update labels
   updateLabels(

@@ -22,7 +22,7 @@ function createSelect(id, onChangeCallback) {
   return selectElement;
 }
 
-function createOptions(id, values) {
+function createOptions(id, values, selectedOption) {
   const selectElement = document.getElementById(id);
   // Flush options
   selectElement.options.length = 0;
@@ -40,6 +40,9 @@ function createOptions(id, values) {
     option.textContent = capitalize(v);
     selectElement.appendChild(option);
   });
+
+  // Select option
+  selectElement.value = selectedOption || "";
 }
 
 export function setFilters(onSelectFilters) {
@@ -70,7 +73,12 @@ export function setFilters(onSelectFilters) {
   filtersElement.appendChild(ustensilsSelect);
 }
 
-export function renderFilters(filterRecipes) {
+export function renderFilters(
+  filterRecipes,
+  selectedIngredient,
+  selectedAppliance,
+  selectedUstensil
+) {
   // Faire un helper = unique qui prends un [] ou un [{}]
   // Méthode A =
   // ${
@@ -98,7 +106,7 @@ export function renderFilters(filterRecipes) {
     ),
   ];
 
-  createOptions("ingredients", ingredients);
-  createOptions("appliances", appliances);
-  createOptions("ustensils", ustensils);
+  createOptions("ingredients", ingredients, selectedIngredient);
+  createOptions("appliances", appliances, selectedAppliance);
+  createOptions("ustensils", ustensils, selectedUstensil);
 }
