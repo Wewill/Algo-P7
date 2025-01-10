@@ -79,7 +79,6 @@ export function renderFilters(
   selectedAppliance,
   selectedUstensil
 ) {
-  // Faire un helper = unique qui prends un [] ou un [{}]
   // Méthode A =
   // ${
   //   recipes.reduce((acc, cur) => {
