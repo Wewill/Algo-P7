@@ -4,9 +4,9 @@ import { sanitize } from "./../helpers/helpers.js";
 const filterRecipes_A = (
   recipes = [],
   s = "",
-  ingredient = "",
-  appliance = "",
-  ustensil = ""
+  ingredients = [],
+  appliances = [],
+  ustensils = []
 ) => {
   let _filteredRecipes = recipes.filter((r) => {
     // Search for "s" in name and ingredients
@@ -20,29 +20,37 @@ const filterRecipes_A = (
             i.ingredient.toLowerCase().includes(s.toLowerCase())
         ));
 
-    // Search for ingredient from select
-    const ingredientsMatch = ingredient
-      ? r.ingredients.some(
-          (i) =>
-            typeof i.ingredient === "string" &&
-            sanitize(i.ingredient) === ingredient
+    // Search for ingredients from select
+    const ingredientsMatch = ingredients.length
+      ? ingredients.every((ingredient) =>
+          r.ingredients.some(
+            (i) =>
+              typeof i.ingredient === "string" &&
+              sanitize(i.ingredient) === ingredient
+          )
         )
       : true;
 
-    // Search for appliance from select
-    const applianceMatch = appliance
-      ? typeof r.appliance === "string" && sanitize(r.appliance) === appliance
+    // Search for appliances from select
+    const appliancesMatch = appliances.length
+      ? appliances.every(
+          (appliance) =>
+            typeof r.appliance === "string" &&
+            sanitize(r.appliance) === appliance
+        )
       : true;
 
-    // Search for ustensil from select
-    const ustensilsMatch = ustensil
-      ? r.ustensils.some(
-          (u) => typeof u === "string" && sanitize(u) === ustensil
+    // Search for ustensils from select
+    const ustensilsMatch = ustensils.length
+      ? ustensils.every((ustensil) =>
+          r.ustensils.some(
+            (u) => typeof u === "string" && sanitize(u) === ustensil
+          )
         )
       : true;
 
     // Keep or leave ?
-    return nameMatch && ingredientsMatch && applianceMatch && ustensilsMatch;
+    return nameMatch && ingredientsMatch && appliancesMatch && ustensilsMatch;
   });
 
   // Then, return
@@ -53,9 +61,9 @@ const filterRecipes_A = (
 const filterRecipes_B = (
   recipes = [],
   s = "",
-  ingredient = "",
-  appliance = "",
-  ustensil = ""
+  ingredients = [],
+  appliances = [],
+  ustensils = []
 ) => {
   let _filteredRecipes = [];
 
@@ -72,29 +80,37 @@ const filterRecipes_B = (
             i.ingredient.toLowerCase().includes(s.toLowerCase())
         ));
 
-    // Recherche de l'ingrédient dans le select
-    const ingredientsMatch = ingredient
-      ? r.ingredients.some(
-          (i) =>
-            typeof i.ingredient === "string" &&
-            sanitize(i.ingredient) === ingredient
+    // Recherche des ingrédients dans le select
+    const ingredientsMatch = ingredients.length
+      ? ingredients.every((ingredient) =>
+          r.ingredients.some(
+            (i) =>
+              typeof i.ingredient === "string" &&
+              sanitize(i.ingredient) === ingredient
+          )
         )
       : true;
 
-    // Recherche de l'appareil dans le select
-    const applianceMatch = appliance
-      ? typeof r.appliance === "string" && sanitize(r.appliance) === appliance
+    // Recherche des appareils dans le select
+    const appliancesMatch = appliances.length
+      ? appliances.every(
+          (appliance) =>
+            typeof r.appliance === "string" &&
+            sanitize(r.appliance) === appliance
+        )
       : true;
 
-    // Recherche de l'ustensile dans le select
-    const ustensilsMatch = ustensil
-      ? r.ustensils.some(
-          (u) => typeof u === "string" && sanitize(u) === ustensil
+    // Recherche des ustensiles dans le select
+    const ustensilsMatch = ustensils.length
+      ? ustensils.every((ustensil) =>
+          r.ustensils.some(
+            (u) => typeof u === "string" && sanitize(u) === ustensil
+          )
         )
       : true;
 
     // Si la recette correspond à tous les critères, on l'ajoute à filteredRecipes
-    if (nameMatch && ingredientsMatch && applianceMatch && ustensilsMatch) {
+    if (nameMatch && ingredientsMatch && appliancesMatch && ustensilsMatch) {
       _filteredRecipes.push(r);
     }
   }
@@ -105,7 +121,7 @@ const filterRecipes_B = (
 };
 
 // Choose filtering method
-// const filterRecipes = filterRecipes_A;
-const filterRecipes = filterRecipes_B;
+const filterRecipes = filterRecipes_A;
+//const filterRecipes = filterRecipes_B;
 
 export default filterRecipes;

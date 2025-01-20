@@ -6,72 +6,131 @@ const selectNames = {
   ustensils: "Ustensiles",
 };
 
-// Stocker dans window
-window.__state = {
-  ingredients: { s: "", selectedOptions: [], values: [], dropdownOpen: false },
-  appliances: { s: "", selectedOptions: [], values: [], dropdownOpen: false },
-  ustensils: { s: "", selectedOptions: [], values: [], dropdownOpen: false },
-};
-
 function createSelect(id) {
+  console.log("createSelect");
   // Select wrapper
   const selectElement = document.createElement("div");
   selectElement.id = id;
-  selectElement.classList = "select wrapper mr-4";
+  selectElement.classList =
+    "select wrapper mr-4 relative h-[50px] w-[195px] cursor-pointer relative z-10";
 
   // Set label
   const selectLabelElement = document.createElement("label");
   selectLabelElement.innerHTML = selectNames[id];
+  let labelClass =
+    " p-3 h-[50px] border-none bg-white cursor-pointer align-left block";
+  selectLabelElement.classList =
+    (window.__state[id].dropdownOpen ? "rounded-t-md" : "rounded-md") +
+    labelClass;
 
   // Set button to open dropdown
   const selectButtonElement = document.createElement("button");
   selectButtonElement.id = "button_" + id;
   selectButtonElement.classList =
-    "rounded-md p-3 h-50px border-none bg-yellow-400 pointer align-left relative";
+    "rounded-md p-3 h-50px border-none  cursor-pointer align-left absolute top-0 right-0";
   selectButtonElement.type = "button";
   selectButtonElement.ariaExpanded = window.__state[id].dropdownOpen;
   selectButtonElement.title = "Bouton pour ouvrir le menu déroulant";
   selectButtonElement.innerHTML =
-    "<i class='fa-solid fa-chevron-up' aria-hidden='true'>OUVRIR / FERMER</i>";
+    "<i class='" +
+    (window.__state[id].dropdownOpen
+      ? "fa-solid fa-chevron-up"
+      : "fa-solid fa-chevron-down") +
+    "' aria-hidden='true'></i>";
 
   // Set dropdown wrapper
   const selectDropdownElement = document.createElement("div");
-  selectDropdownElement.classList = "dropdown";
   selectDropdownElement.id = "dropdown_" + id;
-  selectDropdownElement.classList = "hidden";
+  let dropdownClass =
+    " shadow-md rounded-b-md bg-white absolute top-0 left-0 mt-[50px] w-[195px] flex flex-col max-h-[300px] overflow-x-scroll";
+  selectDropdownElement.classList =
+    (window.__state[id].dropdownOpen ? "block" : "hidden") + dropdownClass;
 
   // Set input search
+  const selectLabelSearchElement = document.createElement("label");
+  selectLabelSearchElement.classList = "flex m-4 mt-2 bg-red relative";
+
   const selectSearchElement = document.createElement("input");
-  selectSearchElement.classList = "search mr-4";
   selectSearchElement.name = selectNames[id];
   selectSearchElement.id = "search_" + id;
-  selectSearchElement.placeholder = "Rechercher " + selectNames[id];
+  selectSearchElement.placeholder = "Filtrer..."; // + selectNames[id];
+  selectSearchElement.classList =
+    "rounded-sm border-zinc-300 border p-1 w-full";
+
+  const selectSubmitSearchElement = document.createElement("div");
+  selectSubmitSearchElement.id = "submit_search_" + id;
+  selectSubmitSearchElement.classList =
+    "absolute right-2 top-1 text-zinc-300 hover:text-black";
+  selectSubmitSearchElement.innerHTML = "<i class='fa fa-search'></i>";
+
+  const selectResetSearchElement = document.createElement("button");
+  selectResetSearchElement.id = "submit_search_" + id;
+  selectResetSearchElement.classList =
+    "-hidden absolute right-2 top-1 bg-green mr-6 text-zinc-300 hover:text-black";
+  selectResetSearchElement.innerHTML = "<i class='fa fa-close'></i>";
+
+  selectResetSearchElement.addEventListener("click", () => {
+    selectSearchElement.value = "";
+    window.__state[id].s = "";
+    renderOptions(id);
+  });
+
+  selectLabelSearchElement.appendChild(selectSearchElement);
+  selectLabelSearchElement.appendChild(selectSubmitSearchElement);
+  selectLabelSearchElement.appendChild(selectResetSearchElement);
 
   // Set dropdown
   const selectListElement = document.createElement("ul");
   selectListElement.id = "list_" + id;
   selectListElement.role = "listbox";
+  selectListElement.classList = "rounded-md border-none bg-white";
 
-  // Set dropdown events
-  selectButtonElement.addEventListener("click", () => {
-    window.__state[id].dropdownOpen = !window.__state[id].dropdownOpen;
+  function toggleDropdown(id) {
     selectButtonElement.ariaExpanded = window.__state[id].dropdownOpen;
     selectButtonElement.innerHTML =
       "<i class='" +
       (window.__state[id].dropdownOpen
         ? "fa-solid fa-chevron-up"
         : "fa-solid fa-chevron-down") +
-      "' aria-hidden='true'>OUVRIR / FERMER</i>";
-    selectDropdownElement.classList = window.__state[id].dropdownOpen
-      ? "block"
-      : "hidden";
-  });
+      "' aria-hidden='true'></i>";
+    selectDropdownElement.classList =
+      (window.__state[id].dropdownOpen ? "block" : "hidden") + dropdownClass;
+    selectLabelElement.classList =
+      (window.__state[id].dropdownOpen ? "rounded-t-md" : "rounded-md") +
+      labelClass;
+  }
 
+  // Set dropdown events
+  selectLabelElement.addEventListener("click", () => {
+    console.log("Toogle dropdown");
+    window.__state[id].dropdownOpen = !window.__state[id].dropdownOpen;
+    toggleDropdown(id);
+  });
+  // selectButtonElement.addEventListener("click", () => {
+  //   console.log("Toogle dropdown");
+  //   window.__state[id].dropdownOpen = !window.__state[id].dropdownOpen;
+  //   toggleDropdown(id);
+  // });
+
+  // Close dropdowns select on click outside
+  document.addEventListener("click", (event) => {
+    console.log(
+      "Close dropdowns",
+      event.target,
+      event.target.closest("label"),
+      event.target.closest("i")
+    );
+    if (!event.target.closest("label")) {
+      console.log("Close dropdowns");
+      window.__state[id].dropdownOpen = false;
+    }
+    toggleDropdown(id);
+  });
   // Append to DOM
   selectElement.appendChild(selectLabelElement);
   selectElement.appendChild(selectButtonElement);
 
-  selectDropdownElement.appendChild(selectSearchElement);
+  selectDropdownElement.appendChild(selectLabelSearchElement);
   selectDropdownElement.appendChild(selectListElement);
   selectElement.appendChild(selectDropdownElement);
 
@@ -98,30 +157,69 @@ function renderOptions(id, onChangeCallback) {
   // Flush list options
   selectListElement.textContent = "";
   // Populate list options
+  let selectedOptions = [];
+  let unselectedOptions = [];
   filteredValues.forEach((v) => {
     const optionLi = document.createElement("li");
     optionLi.setAttribute("data-value", sanitize(v));
     optionLi.setAttribute("data-name", capitalize(v));
     optionLi.id = sanitize(v);
     optionLi.innerHTML = capitalize(v);
-    optionLi.classList = "p-3 border-b-1 border-b-black";
+    optionLi.classList =
+      "py-2 px-4 border-b-1 border-b-black text-sm flex flex-row justify-between items-center cursor-pointer";
+
     // Select option
     optionLi.setAttribute(
       "data-selected",
-      state.selectedOptions.includes(sanitize(v))
+      state.selectedOptions.some((option) => option.value === sanitize(v))
     );
-    selectListElement.appendChild(optionLi);
+
+    // Highlight selected option
+    if (state.selectedOptions.some((option) => option.value === sanitize(v))) {
+      optionLi.classList += " bg-yellow-400";
+
+      const removeButton = document.createElement("button");
+      removeButton.classList =
+        "text-yellow-400 rounded-full bg-black w-4 h-4 p-0 m-0 flex flex-row justify-center items-center";
+      removeButton.innerHTML = "<i class='fa fa-close text-xs'></i>";
+      removeButton.addEventListener("click", (event) => {});
+      optionLi.appendChild(removeButton);
+
+      selectedOptions.push(optionLi);
+    } else {
+      unselectedOptions.push(optionLi);
+    }
 
     // Callback event
     if (typeof onChangeCallback === "function") {
       optionLi.addEventListener("click", (event) => {
         const value = optionLi.getAttribute("data-value");
         const name = optionLi.getAttribute("data-name");
-        window.__state[id].selectedOptions.push({ value: value, name: name });
-        onChangeCallback(value);
+        // Add unique selected option or remove it
+        if (
+          !window.__state[id].selectedOptions.some(
+            (option) => option.value === value
+          )
+        ) {
+          // Add selected option
+          window.__state[id].selectedOptions.push({ value: value, name: name });
+          onChangeCallback(value);
+        } else {
+          // Remove selected option
+          window.__state[id].selectedOptions = window.__state[
+            id
+          ].selectedOptions.filter((option) => option.value !== value);
+          onChangeCallback(value);
+        }
       });
     }
   });
+
+  // Then, append to DOM
+  // Append selected options first
+  selectedOptions.forEach((option) => selectListElement.appendChild(option));
+  // Append unselected options
+  unselectedOptions.forEach((option) => selectListElement.appendChild(option));
 }
 
 export function setFilters() {
@@ -140,15 +238,9 @@ export function setFilters() {
   filtersElement.appendChild(ustensilsSelect);
 }
 
-export function renderFilters(
-  filterRecipes,
-  selectedIngredient,
-  selectedAppliance,
-  selectedUstensil,
-  onSelectFilters
-) {
+export function renderFilters(filteredRecipes, onSelectFilters) {
   // Méthode A =
-  window.__state.ingredients.values = filterRecipes.reduce((acc, cur) => {
+  window.__state.ingredients.values = filteredRecipes.reduce((acc, cur) => {
     cur.ingredients.forEach((i) => {
       if (
         i.ingredient &&
@@ -165,16 +257,18 @@ export function renderFilters(
   // Issued because ingredient can be case sensitive as "Lait de coco" and "lait de Coco" and "lait de coco" as an unique ingredient
   // window.__state.ingredients.values = [
   //   ...new Set(
-  //     filterRecipes
+  //     filteredRecipes
   //       .flatMap((recipe) => recipe.ingredients.map((i) => i.ingredient))
   //       .filter(Boolean)
   //   ),
   // ];
   window.__state.appliances.values = [
-    ...new Set(filterRecipes.map((recipe) => recipe.appliance).filter(Boolean)),
+    ...new Set(
+      filteredRecipes.map((recipe) => recipe.appliance).filter(Boolean)
+    ),
   ];
   // Méthode A
-  window.__state.ustensils.values = filterRecipes.reduce((acc, cur) => {
+  window.__state.ustensils.values = filteredRecipes.reduce((acc, cur) => {
     cur.ustensils.forEach((u) => {
       if (u && !acc.includes(u) && !acc.map(sanitize).includes(sanitize(u))) {
         acc.push(u);
@@ -186,42 +280,22 @@ export function renderFilters(
   // Méthode B
   // window.__state.ustensils.values = [
   //   ...new Set(
-  //     filterRecipes.flatMap((recipe) => recipe.ustensils).filter(Boolean)
+  //     filteredRecipes.flatMap((recipe) => recipe.ustensils).filter(Boolean)
   //   ),
   // ];
 
-  // A passer dans render + callback
-  const onIngredientsChange = (value) => {
-    console.log(`Ingredients sélectionnée : ${value}`);
-    onSelectFilters({ ingredient: value });
-  };
+  // First render options
+  renderOptions("ingredients", onSelectFilters);
+  renderOptions("appliances", onSelectFilters);
+  renderOptions("ustensils", onSelectFilters);
 
-  const onAppliancesChange = (value) => {
-    console.log(`Appliance sélectionnée : ${value}`);
-    onSelectFilters({ appliance: value });
-  };
-
-  const onUstensilsChange = (value) => {
-    console.log(`Ustensils sélectionnée : ${value}`);
-    onSelectFilters({ ustensil: value });
-  };
-
-  // First render
-  renderOptions("ingredients", onIngredientsChange);
-  renderOptions("appliances", onAppliancesChange);
-  renderOptions("ustensils", onUstensilsChange);
-
-  // Search events
+  // Search events, trigger search and re-render options
   // Search ingredients event
   document
     .getElementById("search_ingredients")
     .addEventListener("input", (event) => {
       window.__state.ingredients.s = event.target.value;
-      console.log(
-        "Search ingredients::",
-        window.__state.ingredients.s,
-        selectedIngredient
-      );
+      console.log("Search ingredients::", window.__state.ingredients.s);
       renderOptions("ingredients", onSelectFilters);
     });
 
@@ -230,11 +304,7 @@ export function renderFilters(
     .getElementById("search_appliances")
     .addEventListener("input", (event) => {
       window.__state.appliances.s = event.target.value;
-      console.log(
-        "Search appliances::",
-        window.__state.appliances.s,
-        selectedAppliance
-      );
+      console.log("Search appliances::", window.__state.appliances.s);
       renderOptions("appliances", onSelectFilters);
     });
 
@@ -243,11 +313,7 @@ export function renderFilters(
     .getElementById("search_ustensils")
     .addEventListener("input", (event) => {
       window.__state.ustensils.s = event.target.value;
-      console.log(
-        "Search ustensils::",
-        window.__state.ustensils.s,
-        selectedUstensil
-      );
+      console.log("Search ustensils::", window.__state.ustensils.s);
       renderOptions("ustensils", onSelectFilters);
     });
 }

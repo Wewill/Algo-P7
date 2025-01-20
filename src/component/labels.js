@@ -2,7 +2,7 @@ function createLabel(id, value, onChangeCallback) {
   // Set label
   const labelElement = document.createElement("div");
   labelElement.classList =
-    "label rounded-md bg-yellow-400 font-normal px-5 py-3 mr-4";
+    "label rounded-md bg-yellow-400 font-normal px-5 py-3 mr-4 cursor-pointer";
 
   let optionName =
     window.__state[`${id}s`].selectedOptions.find((o) =>
@@ -19,7 +19,7 @@ function createLabel(id, value, onChangeCallback) {
 
   // Callback event
   if (typeof onChangeCallback === "function") {
-    labelButtonElement.addEventListener("click", (event) => {
+    labelElement.addEventListener("click", () => {
       onChangeCallback(value);
       labelElement.remove();
     });
@@ -29,73 +29,69 @@ function createLabel(id, value, onChangeCallback) {
   return labelElement;
 }
 
-export function updateLabels(ingredient, appliance, ustensil, onSelectFilters) {
+export function updateLabels(onSelectFilters) {
   const labelsElement = document.getElementById("labels");
 
-  if (ingredient) {
-    // // Flush labels
-    // document
-    //   .querySelectorAll('[data-type="ingredient"]')
-    //   .forEach((el) => el.remove());
-    // Unset Ingredients
+  // Clear labels
+  labelsElement.innerHTML = "";
+
+  // Ingredients
+  window.__state.ingredients.selectedOptions.forEach((ingredient) => {
     const onIngredientsChange = (value) => {
       console.log(`Option dé-sélectionnée : ${value}`, window.__state);
 
-      // Méthode A
       window.__state.ingredients.selectedOptions =
         window.__state.ingredients.selectedOptions.filter(
           (option) => option.value !== value
         );
 
-      // Méthode B
-      if (window.__state.ingredients.selectedOptions.indexOf(value) !== -1) {
-        window.__state.ingredients.selectedOptions.splice(
-          window.__state.ingredients.selectedOptions.indexOf(value),
-          1
-        );
-      }
-
-      onSelectFilters({
-        ingredient: window.__state.ingredients.selectedOptions,
-      });
+      onSelectFilters();
     };
     const ingredientsLabel = createLabel(
       "ingredient",
-      ingredient,
+      ingredient.value,
       onIngredientsChange
     );
     labelsElement.appendChild(ingredientsLabel);
-  }
+  });
 
-  if (appliance) {
-    // Flush labels
-    document
-      .querySelectorAll('[data-type="appliance"]')
-      .forEach((el) => el.remove());
-    // Unset appliance
+  // Appliances
+  window.__state.appliances.selectedOptions.forEach((appliance) => {
     const onAppliancesChange = (value) => {
       console.log(`Option dé-sélectionnée : ${value}`);
-      onSelectFilters({ appliance: null });
+
+      window.__state.appliances.selectedOptions =
+        window.__state.appliances.selectedOptions.filter(
+          (option) => option.value !== value
+        );
+
+      onSelectFilters();
     };
     const appliancesLabel = createLabel(
       "appliance",
-      appliance,
+      appliance.value,
       onAppliancesChange
     );
     labelsElement.appendChild(appliancesLabel);
-  }
+  });
 
-  if (ustensil) {
-    // Flush labels
-    document
-      .querySelectorAll('[data-type="ustensil"]')
-      .forEach((el) => el.remove());
-    // Unset ustensil
+  // Ustensils
+  window.__state.ustensils.selectedOptions.forEach((ustensil) => {
     const onUstensilsChange = (value) => {
       console.log(`Option dé-sélectionnée : ${value}`);
-      onSelectFilters({ ustensil: null });
+
+      window.__state.ustensils.selectedOptions =
+        window.__state.ustensils.selectedOptions.filter(
+          (option) => option.value !== value
+        );
+
+      onSelectFilters();
     };
-    const ustensilsLabel = createLabel("ustensil", ustensil, onUstensilsChange);
+    const ustensilsLabel = createLabel(
+      "ustensil",
+      ustensil.value,
+      onUstensilsChange
+    );
     labelsElement.appendChild(ustensilsLabel);
-  }
+  });
 }

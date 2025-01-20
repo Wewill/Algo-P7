@@ -14,12 +14,17 @@ import { updateLabels } from "./component/labels.js";
 import { card } from "./component/card.js";
 
 // **** Set
-// Selected values
+// Selected search
 let s = "";
-let selectedIngredient = "";
-let selectedAppliance = "";
-let selectedUstensil = "";
 
+// Store in window selected filters
+window.__state = {
+  ingredients: { s: "", selectedOptions: [], values: [], dropdownOpen: false },
+  appliances: { s: "", selectedOptions: [], values: [], dropdownOpen: false },
+  ustensils: { s: "", selectedOptions: [], values: [], dropdownOpen: false },
+};
+
+// Elements
 const recipesElement = document.getElementById("recipes");
 const counterElement = document.getElementById("counter");
 
@@ -35,9 +40,9 @@ searchElement.addEventListener("input", (event) => {
   filteredRecipes = filterRecipes(
     recipes,
     s,
-    selectedIngredient,
-    selectedAppliance,
-    selectedUstensil
+    window.__state.ingredients.selectedOptions.map((option) => option.value),
+    window.__state.appliances.selectedOptions.map((option) => option.value),
+    window.__state.ustensils.selectedOptions.map((option) => option.value)
   );
   render();
 });
@@ -48,29 +53,22 @@ resetSearchElement.addEventListener("click", () => {
   filteredRecipes = filterRecipes(
     recipes,
     s,
-    selectedIngredient,
-    selectedAppliance,
-    selectedUstensil
+    window.__state.ingredients.selectedOptions.map((option) => option.value),
+    window.__state.appliances.selectedOptions.map((option) => option.value),
+    window.__state.ustensils.selectedOptions.map((option) => option.value)
   );
   render();
 });
 
 // Filters callback event
-const onSelectFilters = (
-  value = { ingredient: "", appliance: "", ustensil: "" }
-) => {
-  selectedIngredient = value.ingredient || "";
-  selectedAppliance = value.appliance || "";
-  selectedUstensil = value.ustensil || "";
-  console.log(`Ingrédient sélectionné : ${selectedIngredient}`);
-  console.log(`Appliance sélectionné : ${selectedAppliance}`);
-  console.log(`Ustentile sélectionné : ${selectedUstensil}`);
+const onSelectFilters = () => {
+  // Filter & render
   filteredRecipes = filterRecipes(
     recipes,
     s,
-    selectedIngredient,
-    selectedAppliance,
-    selectedUstensil
+    window.__state.ingredients.selectedOptions.map((option) => option.value),
+    window.__state.appliances.selectedOptions.map((option) => option.value),
+    window.__state.ustensils.selectedOptions.map((option) => option.value)
   );
   render();
 };
@@ -78,21 +76,10 @@ const onSelectFilters = (
 let previousLength = recipes.length;
 function render() {
   // Update filters options
-  renderFilters(
-    filteredRecipes,
-    selectedIngredient,
-    selectedAppliance,
-    selectedUstensil,
-    onSelectFilters
-  );
+  renderFilters(filteredRecipes, onSelectFilters);
 
   // Update labels
-  updateLabels(
-    selectedIngredient,
-    selectedAppliance,
-    selectedUstensil,
-    onSelectFilters
-  );
+  updateLabels(onSelectFilters);
 
   // Update counter
   counterElement.innerHTML = `${filteredRecipes.length} recettes`;
