@@ -82,14 +82,14 @@ function render() {
     filteredRecipes,
     selectedIngredient,
     selectedAppliance,
-    selectedUstensil
+    selectedUstensil,
+    onSelectFilters
   );
 
   // Update labels
   updateLabels(
     selectedIngredient,
     selectedAppliance,
-
     selectedUstensil,
     onSelectFilters
   );
@@ -114,7 +114,7 @@ function render() {
 
 // **** Run
 // Set filters
-setFilters(onSelectFilters);
+setFilters();
 // Init filtered recipes without filters
 filteredRecipes = filterRecipes(recipes);
 // First render
