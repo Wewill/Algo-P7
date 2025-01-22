@@ -10,3 +10,14 @@ export function capitalize(str) {
   if (!str) return str; // Gérer les chaînes vides
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+export function safe(str) {
+  const map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  };
+  return str.replace(/[&<>"']/g, (char) => map[char]);
+}

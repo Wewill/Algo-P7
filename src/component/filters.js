@@ -1,4 +1,4 @@
-import { sanitize, capitalize } from "../helpers/helpers";
+import { sanitize, capitalize, safe } from "../helpers/helpers";
 
 const selectNames = {
   ingredients: "Ingrédients",
@@ -294,7 +294,8 @@ export function renderFilters(filteredRecipes, onSelectFilters) {
   document
     .getElementById("search_ingredients")
     .addEventListener("input", (event) => {
-      window.__state.ingredients.s = event.target.value;
+      // Clean value to prevent XSS
+      window.__state.ingredients.s = safe(event.target.value) || "";
       console.log("Search ingredients::", window.__state.ingredients.s);
       renderOptions("ingredients", onSelectFilters);
     });
@@ -303,7 +304,8 @@ export function renderFilters(filteredRecipes, onSelectFilters) {
   document
     .getElementById("search_appliances")
     .addEventListener("input", (event) => {
-      window.__state.appliances.s = event.target.value;
+      // Clean value to prevent XSS
+      window.__state.appliances.s = safe(event.target.value) || "";
       console.log("Search appliances::", window.__state.appliances.s);
       renderOptions("appliances", onSelectFilters);
     });
@@ -312,7 +314,8 @@ export function renderFilters(filteredRecipes, onSelectFilters) {
   document
     .getElementById("search_ustensils")
     .addEventListener("input", (event) => {
-      window.__state.ustensils.s = event.target.value;
+      // Clean value to prevent XSS
+      window.__state.ustensils.s = safe(event.target.value) || "";
       console.log("Search ustensils::", window.__state.ustensils.s);
       renderOptions("ustensils", onSelectFilters);
     });

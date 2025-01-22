@@ -13,6 +13,9 @@ import { setFilters, renderFilters } from "./component/filters.js";
 import { updateLabels } from "./component/labels.js";
 import { card } from "./component/card.js";
 
+// Helpers
+import { safe } from "./helpers/helpers.js";
+
 // **** Set
 // Selected search
 let s = "";
@@ -32,7 +35,9 @@ const counterElement = document.getElementById("counter");
 const searchElement = document.getElementById("search");
 const resetSearchElement = document.getElementById("reset");
 searchElement.addEventListener("input", (event) => {
-  s = event.target.value || "";
+  // Clean value to prevent XSS
+  s = safe(event.target.value) || "";
+
   if (s !== "") resetSearchElement.classList.remove("hidden");
   else resetSearchElement.classList.add("hidden");
   console.log(`Pattern recherchée : ${s}`);
