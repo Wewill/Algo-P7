@@ -12,8 +12,8 @@ export function card(element) {
   return `
           <!-- begin:: Card -->
           <div class="card bg-white shadow-smooth rounded-2xl">
-            <div class="card-header bg-cover bg-center h-[250px] rounded-t-2xl relative" 
-            style="background-image: url('${"/recipes/" + element.image}')">
+            <div class="card-header bg-cover bg-center h-[250px] rounded-t-2xl relative lazy" 
+          data-bg="${"/recipes/" + element.image}">
               <div class="badge rounded-full bg-yellow-400 font-light absolute px-3 py-1 top-6 right-6">${
                 element.time
               }min</div>

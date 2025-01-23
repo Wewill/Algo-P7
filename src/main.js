@@ -16,6 +16,9 @@ import { card } from "./component/card.js";
 // Helpers
 import { safe } from "./helpers/helpers.js";
 
+// Green it : lazy loading
+import { lazyload } from "./scripts/lazyloading.js";
+
 // **** Set
 // Selected search
 let s = "";
@@ -111,3 +114,7 @@ setFilters();
 filteredRecipes = filterRecipes(recipes);
 // First render
 render();
+
+// Lazy loading
+document.addEventListener("DOMContentLoaded", lazyload);
+// ****
