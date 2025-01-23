@@ -83,6 +83,9 @@ const onSelectFilters = () => {
 
 let previousLength = recipes.length;
 function render() {
+  // Lazy loading
+  document.addEventListener("DOMContentLoaded", lazyload);
+
   // Update filters options
   renderFilters(filteredRecipes, onSelectFilters);
 
@@ -114,7 +117,3 @@ setFilters();
 filteredRecipes = filterRecipes(recipes);
 // First render
 render();
-
-// Lazy loading
-document.addEventListener("DOMContentLoaded", lazyload);
-// ****
