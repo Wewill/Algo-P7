@@ -83,9 +83,6 @@ const onSelectFilters = () => {
 
 let previousLength = recipes.length;
 function render() {
-  // Lazy loading
-  document.addEventListener("DOMContentLoaded", lazyload);
-
   // Update filters options
   renderFilters(filteredRecipes, onSelectFilters);
 
@@ -117,3 +114,12 @@ setFilters();
 filteredRecipes = filterRecipes(recipes);
 // First render
 render();
+
+// First lazy loading init
+document.addEventListener("DOMContentLoaded", lazyload);
+
+// On DOM change lazy loading reinit
+const observer = new MutationObserver(() => {
+  lazyload(); // Reinitialize lazy loading
+});
+observer.observe(document.body, { childList: true, subtree: true });
