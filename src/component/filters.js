@@ -14,27 +14,32 @@ function createSelect(id) {
   selectElement.classList =
     "select wrapper mr-4 relative h-[50px] w-[195px] cursor-pointer relative z-10";
 
-  // Set label
-  const selectLabelElement = document.createElement("label");
-  selectLabelElement.innerHTML = selectNames[id];
-  let labelClass =
-    " p-3 h-[50px] border-none bg-white cursor-pointer align-left block";
-  selectLabelElement.classList =
-    (window.__state[id].dropdownOpen ? "rounded-t-md" : "rounded-md") +
-    labelClass;
-
   // Set button to open dropdown
   const selectButtonElement = document.createElement("button");
   selectButtonElement.id = "button_" + id;
-  selectButtonElement.classList =
-    "rounded-md p-3 h-50px border-none  cursor-pointer align-left absolute top-0 right-0";
   selectButtonElement.type = "button";
   selectButtonElement.ariaExpanded = window.__state[id].dropdownOpen;
   selectButtonElement.title = "Bouton pour ouvrir le menu déroulant";
-  selectButtonElement.innerHTML =
-    "<i class='pointer-events-none fa-solid " +
+  let buttonClass =
+    " p-3 h-[50px] border-none bg-white cursor-pointer align-left block w-full flex justify-between items-center";
+  selectButtonElement.classList =
+    (window.__state[id].dropdownOpen ? "rounded-t-md" : "rounded-md") +
+    buttonClass;
+
+  // Set label
+  const selectButtonLabelElement = document.createElement("label");
+  selectButtonLabelElement.innerHTML = selectNames[id];
+
+  // Set Icon
+  const selectButtonIconElement = document.createElement("i");
+  let iconClass = " fa-solid";
+  selectButtonIconElement.classList =
     (window.__state[id].dropdownOpen ? "fa-chevron-up" : "fa-chevron-down") +
-    "' aria-hidden='true'></i>";
+    iconClass;
+  selectButtonIconElement.setAttribute("aria-hidden", "true");
+
+  selectButtonElement.appendChild(selectButtonLabelElement);
+  selectButtonElement.appendChild(selectButtonIconElement);
 
   // Set dropdown wrapper
   const selectDropdownElement = document.createElement("div");
@@ -84,20 +89,22 @@ function createSelect(id) {
   selectListElement.classList = "rounded-md border-none bg-white";
 
   function toggleDropdown(id) {
+    // Button
     selectButtonElement.ariaExpanded = window.__state[id].dropdownOpen;
-    selectButtonElement.innerHTML =
-      "<i class='pointer-events-none fa-solid" +
+    selectButtonElement.classList =
+      (window.__state[id].dropdownOpen ? "rounded-t-md" : "rounded-md") +
+      buttonClass;
+    // Button icon
+    selectButtonIconElement.classList =
       (window.__state[id].dropdownOpen ? "fa-chevron-up" : "fa-chevron-down") +
-      "' aria-hidden='true'></i>";
+      iconClass;
+    // Dropdown
     selectDropdownElement.classList =
       (window.__state[id].dropdownOpen ? "block" : "hidden") + dropdownClass;
-    selectLabelElement.classList =
-      (window.__state[id].dropdownOpen ? "rounded-t-md" : "rounded-md") +
-      labelClass;
   }
 
   // Set dropdown events
-  selectLabelElement.addEventListener("click", () => {
+  selectButtonElement.addEventListener("click", () => {
     console.log("Toogle dropdown");
     window.__state[id].dropdownOpen = !window.__state[id].dropdownOpen;
     toggleDropdown(id);
@@ -105,24 +112,18 @@ function createSelect(id) {
 
   // Close dropdowns select on click outside
   document.addEventListener("click", (event) => {
-    console.log(
-      "Close dropdowns",
-      event.target,
-      event.target.closest("label"),
-      event.target.closest("i")
-    );
-    if (!event.target.closest("label")) {
+    if (!event.target.closest("button")) {
       console.log("Close dropdowns");
       window.__state[id].dropdownOpen = false;
     }
     toggleDropdown(id);
   });
-  // Append to DOM
-  selectElement.appendChild(selectLabelElement);
-  selectElement.appendChild(selectButtonElement);
 
+  // Append to DOM
   selectDropdownElement.appendChild(selectLabelSearchElement);
   selectDropdownElement.appendChild(selectListElement);
+
+  selectElement.appendChild(selectButtonElement);
   selectElement.appendChild(selectDropdownElement);
 
   return selectElement;
