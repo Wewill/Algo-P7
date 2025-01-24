@@ -99,7 +99,7 @@ function render() {
 
   // Update results
   recipesElement.innerHTML = `
-  <section id="cards" class="grid grid-cols-3 grid-flow-row gap-10">
+  <section id="cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid-flow-row gap-10">
    ${filteredRecipes.map((r) => card(r)).join("")} 
   </section>
 `;

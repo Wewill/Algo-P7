@@ -10,8 +10,7 @@ function createSelect(id) {
   // Select wrapper
   const selectElement = document.createElement("div");
   selectElement.id = id;
-  selectElement.classList =
-    "select wrapper mr-4 relative h-[50px] w-[195px] cursor-pointer relative z-10";
+  selectElement.classList = "h-[50px] w-[195px] cursor-pointer relative z-10";
 
   // Set button to open dropdown
   const selectButtonElement = document.createElement("button");
