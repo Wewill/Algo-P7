@@ -40,10 +40,8 @@ const resetSearchElement = document.getElementById("reset");
 searchElement.addEventListener("input", (event) => {
   // Clean value to prevent XSS
   s = safe(event.target.value) || "";
-
   if (s !== "") resetSearchElement.classList.remove("hidden");
   else resetSearchElement.classList.add("hidden");
-  console.log(`Pattern recherchée : ${s}`);
   // Filter & render
   filteredRecipes = filterRecipes(
     recipes,

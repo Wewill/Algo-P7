@@ -54,7 +54,7 @@ const filterRecipes_A = (
   });
 
   // Then, return
-  console.log(_filteredRecipes.length, recipes.length);
+  // console.log(_filteredRecipes.length, recipes.length);
   return _filteredRecipes;
 };
 
@@ -116,7 +116,7 @@ const filterRecipes_B = (
   }
 
   // Affichage du nombre de recettes filtrées
-  console.log(_filteredRecipes.length, recipes.length);
+  // console.log(_filteredRecipes.length, recipes.length);
   return _filteredRecipes;
 };
 

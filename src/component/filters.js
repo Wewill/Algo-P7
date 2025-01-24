@@ -7,7 +7,6 @@ const selectNames = {
 };
 
 function createSelect(id) {
-  // console.log("createSelect");
   // Select wrapper
   const selectElement = document.createElement("div");
   selectElement.id = id;
@@ -105,7 +104,6 @@ function createSelect(id) {
 
   // Set dropdown events
   selectButtonElement.addEventListener("click", () => {
-    console.log("Toogle dropdown");
     window.__state[id].dropdownOpen = !window.__state[id].dropdownOpen;
     toggleDropdown(id);
   });
@@ -113,7 +111,6 @@ function createSelect(id) {
   // Close dropdowns select on click outside
   document.addEventListener("click", (event) => {
     if (!event.target.closest("button")) {
-      console.log("Close dropdowns");
       window.__state[id].dropdownOpen = false;
     }
     toggleDropdown(id);
@@ -140,12 +137,6 @@ function renderOptions(id, onChangeCallback) {
           o.toLowerCase().includes(state.s.toLowerCase())
         )
       : state.values;
-  console.log(
-    "renderOptions as filtered ?",
-    filteredValues.length,
-    state.values.length
-  );
-
   // Flush list options
   selectListElement.textContent = "";
   // Populate list options
@@ -231,6 +222,7 @@ export function setFilters() {
 }
 
 export function renderFilters(filteredRecipes, onSelectFilters) {
+  //**** Ingredients */
   // Méthode A =
   window.__state.ingredients.values = filteredRecipes.reduce((acc, cur) => {
     cur.ingredients.forEach((i) => {
@@ -254,11 +246,15 @@ export function renderFilters(filteredRecipes, onSelectFilters) {
   //       .filter(Boolean)
   //   ),
   // ];
+
+  //**** Appliances */
   window.__state.appliances.values = [
     ...new Set(
       filteredRecipes.map((recipe) => recipe.appliance).filter(Boolean)
     ),
   ];
+
+  //**** Ustensils */
   // Méthode A
   window.__state.ustensils.values = filteredRecipes.reduce((acc, cur) => {
     cur.ustensils.forEach((u) => {
@@ -288,7 +284,6 @@ export function renderFilters(filteredRecipes, onSelectFilters) {
     .addEventListener("input", (event) => {
       // Clean value to prevent XSS
       window.__state.ingredients.s = safe(event.target.value) || "";
-      console.log("Search ingredients::", window.__state.ingredients.s);
       renderOptions("ingredients", onSelectFilters);
     });
 
@@ -298,7 +293,6 @@ export function renderFilters(filteredRecipes, onSelectFilters) {
     .addEventListener("input", (event) => {
       // Clean value to prevent XSS
       window.__state.appliances.s = safe(event.target.value) || "";
-      console.log("Search appliances::", window.__state.appliances.s);
       renderOptions("appliances", onSelectFilters);
     });
 
@@ -308,7 +302,6 @@ export function renderFilters(filteredRecipes, onSelectFilters) {
     .addEventListener("input", (event) => {
       // Clean value to prevent XSS
       window.__state.ustensils.s = safe(event.target.value) || "";
-      console.log("Search ustensils::", window.__state.ustensils.s);
       renderOptions("ustensils", onSelectFilters);
     });
 }

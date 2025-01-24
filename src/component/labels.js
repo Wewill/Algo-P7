@@ -38,8 +38,6 @@ export function updateLabels(onSelectFilters) {
   // Ingredients
   window.__state.ingredients.selectedOptions.forEach((ingredient) => {
     const onIngredientsChange = (value) => {
-      console.log(`Option dé-sélectionnée : ${value}`, window.__state);
-
       window.__state.ingredients.selectedOptions =
         window.__state.ingredients.selectedOptions.filter(
           (option) => option.value !== value
@@ -58,8 +56,6 @@ export function updateLabels(onSelectFilters) {
   // Appliances
   window.__state.appliances.selectedOptions.forEach((appliance) => {
     const onAppliancesChange = (value) => {
-      console.log(`Option dé-sélectionnée : ${value}`);
-
       window.__state.appliances.selectedOptions =
         window.__state.appliances.selectedOptions.filter(
           (option) => option.value !== value
@@ -78,8 +74,6 @@ export function updateLabels(onSelectFilters) {
   // Ustensils
   window.__state.ustensils.selectedOptions.forEach((ustensil) => {
     const onUstensilsChange = (value) => {
-      console.log(`Option dé-sélectionnée : ${value}`);
-
       window.__state.ustensils.selectedOptions =
         window.__state.ustensils.selectedOptions.filter(
           (option) => option.value !== value
