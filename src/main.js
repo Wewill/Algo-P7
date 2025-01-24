@@ -2,22 +2,22 @@
 import "./style.css";
 
 // Data & filtered data
-import { recipes } from "./data/recipes.js";
+import { recipes } from "./data/recipes";
 let filteredRecipes = {};
 
 // Algorithme
-import filterRecipes from "./algorithm/filterRecipes.js";
+import filterRecipes from "./algorithm/filterRecipes";
 
 // Components
-import { setFilters, renderFilters } from "./component/filters.js";
-import { updateLabels } from "./component/labels.js";
-import { card } from "./component/card.js";
+import { setFilters, renderFilters } from "./component/filters";
+import { updateLabels } from "./component/labels";
+import { card } from "./component/card";
 
 // Helpers
-import { safe } from "./helpers/helpers.js";
+import { safe } from "./helpers/helpers";
 
 // Green it : lazy loading
-import { lazyload } from "./scripts/lazyloading.js";
+import { lazyload } from "./scripts/lazyloading";
 
 // **** Set
 // Selected search
@@ -91,7 +91,7 @@ function render() {
 
   // Update counter
   counterElement.innerHTML = `${filteredRecipes.length} recettes`;
-  if (previousLength != filteredRecipes.length) {
+  if (previousLength !== filteredRecipes.length) {
     counterElement.animate([{ color: "#fbbf24" }, { color: "#000" }], {
       duration: 800,
       iterations: 1,
