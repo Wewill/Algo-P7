@@ -110,7 +110,10 @@ function createSelect(id) {
 
   // Close dropdowns select on click outside
   document.addEventListener("click", (event) => {
-    if (!event.target.closest("button")) {
+    if (
+      !event.target.closest("button") &&
+      !event.target.closest("input")?.id.includes("search_")
+    ) {
       window.__state[id].dropdownOpen = false;
     }
     toggleDropdown(id);
