@@ -7,7 +7,7 @@ const selectNames = {
 };
 
 function createSelect(id) {
-  console.log("createSelect");
+  // console.log("createSelect");
   // Select wrapper
   const selectElement = document.createElement("div");
   selectElement.id = id;
@@ -32,10 +32,8 @@ function createSelect(id) {
   selectButtonElement.ariaExpanded = window.__state[id].dropdownOpen;
   selectButtonElement.title = "Bouton pour ouvrir le menu déroulant";
   selectButtonElement.innerHTML =
-    "<i class='" +
-    (window.__state[id].dropdownOpen
-      ? "fa-solid fa-chevron-up"
-      : "fa-solid fa-chevron-down") +
+    "<i class='pointer-events-none fa-solid " +
+    (window.__state[id].dropdownOpen ? "fa-chevron-up" : "fa-chevron-down") +
     "' aria-hidden='true'></i>";
 
   // Set dropdown wrapper
@@ -88,10 +86,8 @@ function createSelect(id) {
   function toggleDropdown(id) {
     selectButtonElement.ariaExpanded = window.__state[id].dropdownOpen;
     selectButtonElement.innerHTML =
-      "<i class='" +
-      (window.__state[id].dropdownOpen
-        ? "fa-solid fa-chevron-up"
-        : "fa-solid fa-chevron-down") +
+      "<i class='pointer-events-none fa-solid" +
+      (window.__state[id].dropdownOpen ? "fa-chevron-up" : "fa-chevron-down") +
       "' aria-hidden='true'></i>";
     selectDropdownElement.classList =
       (window.__state[id].dropdownOpen ? "block" : "hidden") + dropdownClass;
@@ -106,11 +102,6 @@ function createSelect(id) {
     window.__state[id].dropdownOpen = !window.__state[id].dropdownOpen;
     toggleDropdown(id);
   });
-  // selectButtonElement.addEventListener("click", () => {
-  //   console.log("Toogle dropdown");
-  //   window.__state[id].dropdownOpen = !window.__state[id].dropdownOpen;
-  //   toggleDropdown(id);
-  // });
 
   // Close dropdowns select on click outside
   document.addEventListener("click", (event) => {
