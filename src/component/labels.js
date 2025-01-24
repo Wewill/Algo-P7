@@ -4,6 +4,7 @@ function createLabel(id, value, onChangeCallback) {
   labelElement.classList =
     "label rounded-md bg-yellow-400 font-normal px-5 py-3 mr-4 cursor-pointer";
 
+  // Get option name
   let optionName =
     window.__state[`${id}s`].selectedOptions.find((o) =>
       o.value.includes(value)
@@ -13,9 +14,11 @@ function createLabel(id, value, onChangeCallback) {
   labelElement.setAttribute("data-type", id);
   labelElement.setAttribute("data-value", value);
 
+  // Set label close button
   const labelButtonElement = document.createElement("button");
   labelButtonElement.classList = "ml-8";
-  labelButtonElement.innerHTML = "<i class='fa fa-close'>";
+  labelButtonElement.innerHTML =
+    "<i class='fa fa-close' aria-hidden='true'></i>";
 
   // Callback event
   if (typeof onChangeCallback === "function") {
@@ -32,10 +35,10 @@ function createLabel(id, value, onChangeCallback) {
 export function updateLabels(onSelectFilters) {
   const labelsElement = document.getElementById("labels");
 
-  // Clear labels
+  // Flush labels
   labelsElement.innerHTML = "";
 
-  // Ingredients
+  //**** Ingredients */
   window.__state.ingredients.selectedOptions.forEach((ingredient) => {
     const onIngredientsChange = (value) => {
       window.__state.ingredients.selectedOptions =
@@ -53,7 +56,7 @@ export function updateLabels(onSelectFilters) {
     labelsElement.appendChild(ingredientsLabel);
   });
 
-  // Appliances
+  //**** Appliances */
   window.__state.appliances.selectedOptions.forEach((appliance) => {
     const onAppliancesChange = (value) => {
       window.__state.appliances.selectedOptions =
@@ -71,7 +74,7 @@ export function updateLabels(onSelectFilters) {
     labelsElement.appendChild(appliancesLabel);
   });
 
-  // Ustensils
+  //**** Ustensils */
   window.__state.ustensils.selectedOptions.forEach((ustensil) => {
     const onUstensilsChange = (value) => {
       window.__state.ustensils.selectedOptions =
