@@ -121,7 +121,7 @@ const filterRecipes_B = (
 };
 
 // Choose filtering method
-const filterRecipes = filterRecipes_A;
-//const filterRecipes = filterRecipes_B;
+// const filterRecipes = filterRecipes_A;
+const filterRecipes = filterRecipes_B;
 
 export default filterRecipes;
